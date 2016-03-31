@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/joergjung/node-express-mongodb-redis/issues"
   },
-  "homepage": "https://github.com/joergjung/node-express-mongodb-redis#readme"
+  "homepage": "https://github.com/joergjung/node-express-mongodb-redis#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
 }
