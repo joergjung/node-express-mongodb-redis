@@ -1,12 +1,12 @@
-var http = require('http');
+var express = require('express');
 
-// callback function has request and response object
-http.createServer(function(req, res) {
-    // write Header (Staus 200)
-    res.writeHead(200, {
-        'Content-Type': 'text/plain'        
-    });
-    res.end('Hello world!!\n');    
-}).listen(3000, '127.0.0.1');
+var app = express();
 
-console.log('Server running at http://127.0.0.1:3000');
+app.get('/', function(req, res) {
+//    res.send('Hello World!!'); 
+   res.json({hello: 'hi'}); 
+});
+
+var server = app.listen(3000, function() {
+    console.log("Server running at localhost:3000");    
+})
