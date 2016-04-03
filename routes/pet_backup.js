@@ -27,14 +27,13 @@ module.exports = function(app) {
                 });
             },
             dog: function(callback) {
-
                 // check in redis if key (the whole dog endpoint) exists
                 client.get('http://localhost:3001/dog', function(error, dog) {
                     if (error) {
                         callback({service: 'dog', error: error});
                         return;
                     }
-                    if (error) {throw error;}
+                    // if (error) {throw error;}
                     // it is already in redis
                     if (dog) {
                         // parse string to object and callback
@@ -50,14 +49,16 @@ module.exports = function(app) {
                             }
                             if (!error && response.statusCode === 200) {
                                 callback(null, body);
+                                /*
                                 // store it in redis (convert value to string before)
                                 client.set(req.params.id, JSON.stringify(body), function(error){
+                                    // if (error) {throw error;}
                                     if (error) {
                                         console.log("client.set error in dog async");
                                         callback({service: 'dog', error: error});
                                         return;
                                     }
-                                });
+                                }); */
                             } else {
                                 callback(response.statusCode);
                             }
@@ -65,7 +66,7 @@ module.exports = function(app) {
                     }
                 },
                 function(error, results) {
-                    console.log("error - dog async not working");
+                    console.log("we have an error");
                     
                     res.json({
                         error: error,
