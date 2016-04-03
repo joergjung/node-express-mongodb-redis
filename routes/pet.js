@@ -9,7 +9,6 @@ module.exports = function(app) {
 
     /* --- Read --- */
     app.get('/pets', function(req, res) {
-        
         async.parallel({
             cat: function(callback){
                 r({uri: 'http://localhost:3000/cat'}, function(error, response, body) {
@@ -27,35 +26,27 @@ module.exports = function(app) {
                 });
             },
             dog: function(callback) {
-
                 // check in redis if key (the whole dog endpoint) exists
                 client.get('http://localhost:3001/dog', function(error, dog) {
-                    if (error) {
-                        callback({service: 'dog', error: error});
-                        return;
-                    }
                     if (error) {throw error;}
-                    // it is already in redis
+                    // key is already in redis
                     if (dog) {
-                        // parse string to object and callback
-                        console.log("dog exists in redis");
-                        
+                        // parse string to object and callback                        
                         callback(null, JSON.parse(dog));
                     } else {
-                        // it is not in redis, request it now
+                        // key is not in redis, request it now
                         r({uri: 'http://localhost:3001/dog'}, function(error, response, body) {
                             if (error) {
                                 callback({service: 'dog', error: error});
                                 return;
                             }
                             if (!error && response.statusCode === 200) {
-                                callback(null, body);
+                                callback(null, body.data);
                                 // store it in redis (convert value to string before)
-                                client.set(req.params.id, JSON.stringify(body), function(error){
+                                client.set('http://localhost:3001/dog', JSON.stringify(body.data), function(error){
                                     if (error) {
                                         console.log("client.set error in dog async");
-                                        callback({service: 'dog', error: error});
-                                        return;
+                                        throw error;
                                     }
                                 });
                             } else {
@@ -66,7 +57,6 @@ module.exports = function(app) {
                 },
                 function(error, results) {
                     console.log("error - dog async not working");
-                    
                     res.json({
                         error: error,
                         results: results
